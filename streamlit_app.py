@@ -14,11 +14,7 @@ if st.button('Send'):
            ]
        )
        # Check if the response has the expected structure
-       if 'choices' in response and response['choices']:
-           st.text_area("AI Response:", value=response['choices'][0]['message']['content'], height=200)
-       else:
-           st.error("Received an unexpected response format from OpenAI.")
-   except openai.error.OpenAIError as e:
-       st.error(f"An error occurred with the OpenAI API: {e}")
+       st.text_area("AI Response:", value=response['choices'][0]['message']['content'], height=200)
+
    except Exception as e:
        st.error(f"An unexpected error occurred: {e}")
