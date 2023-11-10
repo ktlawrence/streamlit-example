@@ -1,7 +1,7 @@
 import streamlit as st
 import openai
 # Load your API key from an environment variable or secure source
-openai.api_key = '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'
+openai.api_key = st.secrets["OPENAI_API_KEY"]
 st.title('Chat with AI')
 # Create a text box for user input
 user_input = st.text_input("Talk to the AI")
