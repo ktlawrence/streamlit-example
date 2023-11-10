@@ -13,7 +13,7 @@ user_input = st.text_input("Talk to the AI")
 if st.button('Send'):
     try:
         response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model="gpt-4-1106-preview",
             messages=[
                 {"role": "system", "content": "You are a helpful assistant."},
                 {"role": "user", "content": f"{user_input}"}
