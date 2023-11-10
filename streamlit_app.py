@@ -1,6 +1,5 @@
 import streamlit as st
 import openai
-from streamlit import caching
 
 # Function to handle sending and receiving messages
 def submit_response():
@@ -82,6 +81,6 @@ user_input = st.text_input(
 
 # Reset conversation button
 if st.button('Reset Conversation'):
-    caching.clear_cache()
+    st.legacy_caching.clear_cache()
     st.session_state['history'] = []
     st.experimental_rerun()
