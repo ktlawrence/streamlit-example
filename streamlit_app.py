@@ -1,6 +1,6 @@
 import streamlit as st
 import openai
-
+client =openai.OpenAI()
 # Initialize the OpenAI client
 openai.api_key = st.secrets["OPENAI_API_KEY"]
 
@@ -45,7 +45,7 @@ if st.button('Send'):
     st.session_state['history'].append({"role": "user", "content": user_input})
 
     try:
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=st.session_state['history']
         )
