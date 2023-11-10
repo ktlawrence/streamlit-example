@@ -4,7 +4,7 @@ import openai
 # Function to handle sending and receiving messages
 def submit_response():
     user_input = st.session_state.user_input
-    if user_input: # Check if there's input to avoid empty requests
+    if user_input:  # Check if there's input to avoid empty requests
         with st.spinner('Waiting for AI response...'):
             try:
                 # Add user input to history
@@ -20,8 +20,8 @@ def submit_response():
                 if response.choices:
                     message_content = response.choices[0]["message"]["content"]
                     st.session_state['history'].append({"role": "assistant", "content": message_content})
-                    st.session_state.user_input = "" # Clear input field after sending
-                    st.experimental_rerun() # Refresh to display new messages
+                    st.session_state.user_input = ""  # Clear input field after sending
+                    st.experimental_rerun()  # Refresh to display new messages
                 else:
                     st.error("No response received from OpenAI.")
 
@@ -68,16 +68,12 @@ if st.session_state['history']:
         )
 
 # User input with Enter key submission
-user_input = st.text_input(
+st.text_input(
     "Talk to the AI", 
     key="user_input",
     on_change=submit_response,
-    value="" # Initializing as empty
+    value=""  # Initializing as empty
 )
-
-# Button not strictly necessary due to on_change
-# if st.button('Send'):
-#     submit_response()
 
 # Reset conversation button
 if st.button('Reset Conversation'):
