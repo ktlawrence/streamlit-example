@@ -19,13 +19,13 @@ if st.button('Send'):
                 {"role": "user", "content": f"{user_input}"}
             ]
         )
-        # Debugging: Print or display the response to understand its structure
-        st.write("Response:", response)
-
-        # Assuming the response is a dictionary with a 'choices' key
-        if 'choices' in response and response['choices']:
-            st.text_area("AI Response:", value=response['choices'][0]['message']['content'], height=200)
+        
+        # Accessing the response content
+        if response.choices:
+            message_content = response.choices[0].message.content
+            st.text_area("AI Response:", value=message_content, height=200)
         else:
-            st.error("Received an unexpected response format from OpenAI.")
+            st.error("No response received from OpenAI.")
+
     except Exception as e:
         st.error(f"An unexpected error occurred: {e}")
