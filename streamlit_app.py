@@ -9,20 +9,41 @@ openai.api_key = st.secrets["OPENAI_API_KEY"]
 
 st.title('Chat with AI')
 
+# Custom CSS to style the conversation
+st.markdown("""
+    <style>
+    .previous-convo {
+        color: black;
+        background-color: #f0f0f0;
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 10px;
+    }
+    .current-input, .ai-response {
+        color: black;
+        background-color: white;
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 10px;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
 # Use session state to store conversation history
 if 'history' not in st.session_state:
     st.session_state['history'] = []
 
 # Display previous conversations
 if st.session_state['history']:
-    st.write("Previous Conversations:")
+    st.markdown("### Previous Conversations:")
     for index, message in enumerate(st.session_state['history']):
-        # Use a combination of index and content for a unique key
-        key = f"msg_{index}_{message['content'][:10]}"  # using the first 10 characters of content
-        st.text_area("", value=message['content'], height=100, key=key)
+        st.markdown(
+            f"<div class='previous-convo'>{message['content']}</div>", 
+            unsafe_allow_html=True
+        )
 
 # User input
-user_input = st.text_input("Talk to the AI")
+user_input = st.text_input("Talk to the AI", key="user_input")
 
 # Send button
 if st.button('Send'):
@@ -30,7 +51,7 @@ if st.button('Send'):
 
     try:
         response = client.chat.completions.create(
-            model="gpt-4-1106-preview",
+            model="gpt-3.5-turbo",
             messages=st.session_state['history']
         )
         
@@ -38,7 +59,7 @@ if st.button('Send'):
         if response.choices:
             message_content = response.choices[0].message.content
             st.session_state['history'].append({"role": "assistant", "content": message_content})
-            st.text_area("AI Response:", value=message_content, height=200)
+            st.markdown(f"<div class='ai-response'>{message_content}</div>", unsafe_allow_html=True)
         else:
             st.error("No response received from OpenAI.")
 
@@ -48,3 +69,4 @@ if st.button('Send'):
 # Reset conversation button
 if st.button('Reset Conversation'):
     st.session_state['history'] = []
+    st.experimental_rerun()
