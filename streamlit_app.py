@@ -6,7 +6,7 @@ st.title('Chat with AI')
 user_input = st.text_input("Talk to the AI")
 if st.button('Send'):
    try:
-       response = client.chat.completions.create(
+       response = openai.chat.completions.create(
            model="gpt-3.5-turbo",
            messages=[
                {"role": "system", "content": "You are a helpful assistant."},
