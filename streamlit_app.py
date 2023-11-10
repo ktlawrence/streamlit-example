@@ -13,7 +13,7 @@ if st.button('Send'):
        model="gpt-3.5-turbo",
        messages=[
            {"role": "system", "content": "You are a helpful assistant."},
-           {"role": "user", "content": f"{user_input}"}}
+           {"role": "user", "content": f"{user_input}"}
        ]
    )
    # Display the model's response
