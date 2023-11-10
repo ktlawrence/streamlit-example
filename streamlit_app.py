@@ -1,12 +1,13 @@
 import streamlit as st
 import openai
+client=OpenAI()
 # Access the API key from Streamlit secrets
 openai.api_key = st.secrets["OPENAI_API_KEY"]
 st.title('Chat with AI')
 user_input = st.text_input("Talk to the AI")
 if st.button('Send'):
    try:
-       response = openai.chat.completions.create(
+       response = client.chat.completions.create(
            model="gpt-3.5-turbo",
            messages=[
                {"role": "system", "content": "You are a helpful assistant."},
