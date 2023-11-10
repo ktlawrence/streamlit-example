@@ -9,11 +9,11 @@ user_input = st.text_input("Talk to the AI")
 
 if st.button('Send'):
    # Call the OpenAI API with the new chat.completions.create method
-   response = openai.ChatCompletion.create(
+   response = openai.chat.completions.create(
        model="gpt-3.5-turbo",
        messages=[
            {"role": "system", "content": "You are a helpful assistant."},
-           {"role": "user", "content": user_input}
+           {"role": "user", "content": f"{user_input}"}}
        ]
    )
    # Display the model's response
