@@ -1,17 +1,42 @@
 import streamlit as st
 import openai
+from streamlit import caching
+
+# Function to handle sending and receiving messages
+def submit_response():
+    user_input = st.session_state.user_input
+    if user_input: # Check if there's input to avoid empty requests
+        with st.spinner('Waiting for AI response...'):
+            try:
+                # Add user input to history
+                st.session_state['history'].append({"role": "user", "content": user_input})
+
+                # Get response from OpenAI
+                response = openai.Completion.create(
+                    model="gpt-3.5-turbo",
+                    messages=st.session_state['history']
+                )
+
+                # Extract the AI response and update the history
+                if response.choices:
+                    message_content = response.choices[0]["message"]["content"]
+                    st.session_state['history'].append({"role": "assistant", "content": message_content})
+                    st.session_state.user_input = "" # Clear input field after sending
+                    st.experimental_rerun() # Refresh to display new messages
+                else:
+                    st.error("No response received from OpenAI.")
+
+            except Exception as e:
+                st.error(f"An unexpected error occurred: {e}")
 
 # Initialize the OpenAI client
-client = openai.OpenAI()
-
-# Access the API key from Streamlit secrets
 openai.api_key = st.secrets["OPENAI_API_KEY"]
 
 st.title('Chat with AI')
 
 # Custom CSS to style the conversation
 st.markdown("""
-    <style>
+<style>
     .previous-convo {
         color: black;
         background-color: #ffff99;  /* Yellow background */
@@ -19,15 +44,15 @@ st.markdown("""
         border-radius: 5px;
         margin-bottom: 10px;
     }
-    .current-input, .ai-response {
+    .ai-response {
         color: black;
-        background-color: white;
+        background-color: #e0e0e0;  /* Light gray background */
         padding: 10px;
         border-radius: 5px;
         margin-bottom: 10px;
     }
-    </style>
-    """, unsafe_allow_html=True)
+</style>
+""", unsafe_allow_html=True)
 
 # Use session state to store conversation history
 if 'history' not in st.session_state:
@@ -37,36 +62,26 @@ if 'history' not in st.session_state:
 if st.session_state['history']:
     st.markdown("### Previous Conversations:")
     for index, message in enumerate(st.session_state['history']):
+        message_class = 'previous-convo' if message['role'] == 'user' else 'ai-response'
         st.markdown(
-            f"<div class='previous-convo'>{message['content']}</div>", 
+            f"<div class='{message_class}'>{message['content']}</div>",
             unsafe_allow_html=True
         )
 
-# User input
-user_input = st.text_input("Talk to the AI", key="user_input")
+# User input with Enter key submission
+user_input = st.text_input(
+    "Talk to the AI", 
+    key="user_input",
+    on_change=submit_response,
+    value="" # Initializing as empty
+)
 
-# Send button
-if st.button('Send'):
-    st.session_state['history'].append({"role": "user", "content": user_input})
-
-    try:
-        response = client.chat.completions.create(
-            model="gpt-4-1106-preview",
-            messages=st.session_state['history']
-        )
-        
-        # Extract the AI response and update the history
-        if response.choices:
-            message_content = response.choices[0].message.content
-            st.session_state['history'].append({"role": "assistant", "content": message_content})
-            st.markdown(f"<div class='ai-response'>{message_content}</div>", unsafe_allow_html=True)
-        else:
-            st.error("No response received from OpenAI.")
-
-    except Exception as e:
-        st.error(f"An unexpected error occurred: {e}")
+# Button not strictly necessary due to on_change
+# if st.button('Send'):
+#     submit_response()
 
 # Reset conversation button
 if st.button('Reset Conversation'):
+    caching.clear_cache()
     st.session_state['history'] = []
     st.experimental_rerun()
