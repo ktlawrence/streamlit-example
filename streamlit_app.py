@@ -1,6 +1,7 @@
 import streamlit as st
 import openai
 
+client = openai.OpenAI()
 # Function to handle sending and receiving messages
 def submit_response():
     user_input = st.session_state.user_input
@@ -11,8 +12,8 @@ def submit_response():
                 st.session_state['history'].append({"role": "user", "content": user_input})
 
                 # Get response from OpenAI
-                response = openai.Completion.create(
-                    model="gpt-3.5-turbo",
+                response = client.chat.completions.create(
+                    model="gpt-4-1106-preview",
                     messages=st.session_state['history']
                 )
 
