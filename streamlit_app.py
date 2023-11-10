@@ -16,8 +16,10 @@ if 'history' not in st.session_state:
 # Display previous conversations
 if st.session_state['history']:
     st.write("Previous Conversations:")
-    for message in st.session_state['history']:
-        st.text_area("", value=message['content'], height=100, key=message['content'])
+    for index, message in enumerate(st.session_state['history']):
+        # Use a combination of index and content for a unique key
+        key = f"msg_{index}_{message['content'][:10]}"  # using the first 10 characters of content
+        st.text_area("", value=message['content'], height=100, key=key)
 
 # User input
 user_input = st.text_input("Talk to the AI")
