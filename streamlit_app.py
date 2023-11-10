@@ -14,7 +14,7 @@ st.markdown("""
     <style>
     .previous-convo {
         color: black;
-        background-color: #f0f0f0;
+        background-color: #ffff99;  /* Yellow background */
         padding: 10px;
         border-radius: 5px;
         margin-bottom: 10px;
